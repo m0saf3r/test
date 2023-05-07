@@ -1,0 +1,1477 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
+  </head>
+  <body>
+    <br />
+
+    <button onclick="start();">Start</button>
+
+    start range
+    <input
+      id="startpointrange"
+      value="0000000000000000000000000000000000000000000000000000000000000001"
+      style="width: 500px"
+    />
+    lenghd
+    <input id="lenght" value="10" />
+
+    <br /><br /><br />
+
+    <table id="table"></table>
+
+    <br />
+
+    <script>
+      var startpointForAddress = 0;
+      function start() {
+        setTimeout(function () {
+          // Script Gnrate orderly Private Keys- START: 0000000000000000000000000000000000000000000000000000000000000001 // END: fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140:
+
+          const USHORTS = Math.ceil(16); // handled 16 bits at a time
+
+          class U256 extends Array {
+            constructor(hexString) {
+              super();
+              for (var i = hexString.length; i > 0; i -= 4) {
+                var ushortHex = hexString.substring(i, i - 4);
+                this.push(parseInt(ushortHex, 16));
+              }
+              while (this.length < USHORTS) {
+                this.push(0);
+              }
+            }
+            inc() {
+              for (var i = 0; i < USHORTS; ++i) {
+                var ushort = this[i];
+                ++ushort;
+                if (ushort < 0x10000) {
+                  this[i] = ushort;
+                  break;
+                }
+                this[i] = 0;
+              }
+              return this;
+            }
+            toString() {
+              var hex64 = "";
+              for (var i = USHORTS; i--; ) {
+                var hex4 = this[i].toString(16);
+                hex64 += hex4.padStart(4, "0");
+              }
+              return hex64;
+            }
+          }
+
+          function oparex() {
+            if (startpointForAddress !== 0) {
+              // console.log(startpointForAddress);
+              var stratrangeVal = startpointForAddress;
+              document.getElementById("startpointrange").value =
+                startpointForAddress;
+              // console.log(document.getElementById("startpointrange").value);
+            } else {
+              var stratrangeVal =
+                document.getElementById("startpointrange").value;
+            }
+            var lengthforlines = document.getElementById("lenght").value;
+            var u256 = new U256(stratrangeVal);
+            var herxNTX = "";
+            var tr = "<tr>";
+
+            for (var i = 0; i < lengthforlines; ++i) {
+              herxNTX +=
+                tr +
+                '<th class="prades" style="color:#fff;float:left;text-align:left;width:340px;" >' +
+                ' <td class="prades" style="float:;width:200px;color:#fff;" >' +
+                u256.toString();
+
+              document.getElementById("table").innerHTML = herxNTX;
+
+              u256.inc(oparex);
+            }
+          }
+          oparex();
+
+          // function-PrivateToAddress th HTML To Address:
+          function PrivateToAddress() {
+            var BTChex = document.querySelectorAll("td");
+
+            for (var i = 0; i < BTChex.length; i++) {
+              var hex = document.querySelectorAll("td").innerHTML;
+
+              var t = document.getElementsByTagName("tr");
+              var BTCp_gen = document.getElementsByTagName("th");
+
+              var hex = BTChex[i].innerHTML;
+              GenResults = LegacyAddr(hex);
+              BTCp_gen[i].id = GenResults[0];
+              t[i].id = GenResults[0];
+              BTCp_gen[i].innerHTML = GenResults[0];
+            }
+          }
+          PrivateToAddress();
+
+          function LegacyAddr(sec_key) {
+            var hash_str = pad(sec_key, 64, "0");
+            var hash = Crypto.util.hexToBytes(hash_str);
+            eckey = new Bitcoin.ECKey(hash);
+            eckey_c = new Bitcoin.ECKey(hash);
+            var curve = getSECCurveByName("secp256k1");
+            var pt = curve.getG().multiply(eckey.priv);
+            eckey_c.pub = getEncoded(pt, true);
+            eckey_c.pubKeyHash = Bitcoin.Util.sha256ripe160(eckey_c.pub);
+            var hash160_c = eckey_c.getPubKeyHash();
+            var addr_c = new Bitcoin.Address(hash160_c);
+            return [addr_c];
+          }
+
+          function pad(str, len, ch) {
+            padding = "";
+            for (var i = 0; i < len - str.length; i++) {
+              padding += ch;
+            }
+            return padding + str;
+          }
+          function getEncoded(pt, compressed) {
+            var x = pt.getX().toBigInteger();
+            var y = pt.getY().toBigInteger();
+            var enc = integerToBytes(x, 32);
+            if (compressed) {
+              if (y.isEven()) {
+                enc.unshift(0x02);
+              } else {
+                enc.unshift(0x03);
+              }
+            } else {
+              enc.unshift(0x04);
+              enc = enc.concat(integerToBytes(y, 32));
+            }
+            return enc;
+          }
+          var allTRs = document.querySelectorAll("td");
+
+          var trCount = allTRs.length;
+
+          var lastTRContent = allTRs[trCount - 1].innerHTML;
+
+          startpointForAddress = lastTRContent;
+        }, 0),
+          setTimeout(start, 0);
+      }
+
+      // script-privateToAddress:
+
+      function BigInteger(t, e, i) {
+        null != t &&
+          ("number" == typeof t
+            ? this.fromNumber(t, e, i)
+            : null == e && "string" != typeof t
+            ? this.fromString(t, 256)
+            : this.fromString(t, e));
+      }
+
+      function nbi() {
+        return new BigInteger(null);
+      }
+
+      function am3(t, e, i, r, n, F) {
+        for (var o = 16383 & e, s = e >> 14; --F >= 0; ) {
+          var u = 16383 & this[t],
+            h = this[t++] >> 14,
+            p = s * u + h * o;
+          (n =
+            ((u = o * u + ((16383 & p) << 14) + i[r] + n) >> 28) +
+            (p >> 14) +
+            s * h),
+            (i[r++] = 268435455 & u);
+        }
+        return n;
+      }
+
+      function intAt(t, e) {
+        var i = BI_RC[t.charCodeAt(e)];
+        return null == i ? -1 : i;
+      }
+
+      function bnpCopyTo(t) {
+        for (var e = this.t - 1; e >= 0; --e) t[e] = this[e];
+        (t.t = this.t), (t.s = this.s);
+      }
+
+      function bnpFromInt(t) {
+        (this.t = 1),
+          (this.s = t < 0 ? -1 : 0),
+          t > 0 ? (this[0] = t) : t < -1 ? (this[0] = t + DV) : (this.t = 0);
+      }
+
+      function nbv(t) {
+        var e = nbi();
+        return e.fromInt(t), e;
+      }
+
+      function bnpFromString(t, e) {
+        var i;
+        if (256 == e) i = 8;
+        else if (16 == e) i = 4;
+
+        (this.t = 0), (this.s = 0);
+        for (var r = t.length, n = !1, F = 0; --r >= 0; ) {
+          var o = 8 == i ? 255 & t[r] : intAt(t, r);
+          o < 0
+            ? "-" == t.charAt(r) && (n = !0)
+            : ((n = !1),
+              0 == F
+                ? (this[this.t++] = o)
+                : F + i > this.DB
+                ? ((this[this.t - 1] |= (o & ((1 << (this.DB - F)) - 1)) << F),
+                  (this[this.t++] = o >> (this.DB - F)))
+                : (this[this.t - 1] |= o << F),
+              (F += i) >= this.DB && (F -= this.DB));
+        }
+        8 == i &&
+          0 != (128 & t[0]) &&
+          ((this.s = -1),
+          F > 0 && (this[this.t - 1] |= ((1 << (this.DB - F)) - 1) << F)),
+          this.clamp(),
+          n && BigInteger.ZERO.subTo(this, this);
+      }
+
+      function bnpClamp() {
+        for (var t = this.s & this.DM; this.t > 0 && this[this.t - 1] == t; )
+          --this.t;
+      }
+
+      function bnNegate() {
+        var t = nbi();
+        return BigInteger.ZERO.subTo(this, t), t;
+      }
+
+      function bnAbs() {
+        return this.s < 0 ? this.negate() : this;
+      }
+
+      function bnCompareTo(t) {
+        var e = this.s - t.s;
+        if (0 != e) return e;
+        var i = this.t;
+        if (0 != (e = i - t.t)) return this.s < 0 ? -e : e;
+        for (; --i >= 0; ) if (0 != (e = this[i] - t[i])) return e;
+        return 0;
+      }
+
+      function nbits(t) {
+        var e,
+          i = 1;
+        return (
+          0 != (e = t >>> 16) && ((t = e), (i += 16)),
+          0 != (e = t >> 8) && ((t = e), (i += 8)),
+          0 != (e = t >> 4) && ((t = e), (i += 4)),
+          0 != (e = t >> 2) && ((t = e), (i += 2)),
+          0 != (e = t >> 1) && ((t = e), (i += 1)),
+          i
+        );
+      }
+
+      function bnBitLength() {
+        return this.t <= 0
+          ? 0
+          : this.DB * (this.t - 1) +
+              nbits(this[this.t - 1] ^ (this.s & this.DM));
+      }
+
+      function bnpDLShiftTo(t, e) {
+        var i;
+        for (i = this.t - 1; i >= 0; --i) e[i + t] = this[i];
+        for (i = t - 1; i >= 0; --i) e[i] = 0;
+        (e.t = this.t + t), (e.s = this.s);
+      }
+
+      function bnpDRShiftTo(t, e) {
+        for (var i = t; i < this.t; ++i) e[i - t] = this[i];
+        (e.t = Math.max(this.t - t, 0)), (e.s = this.s);
+      }
+
+      function bnpLShiftTo(t, e) {
+        var i,
+          r = t % this.DB,
+          n = this.DB - r,
+          F = (1 << n) - 1,
+          o = Math.floor(t / this.DB),
+          s = (this.s << r) & this.DM;
+        for (i = this.t - 1; i >= 0; --i)
+          (e[i + o + 1] = (this[i] >> n) | s), (s = (this[i] & F) << r);
+        for (i = o - 1; i >= 0; --i) e[i] = 0;
+        (e[o] = s), (e.t = this.t + o + 1), (e.s = this.s), e.clamp();
+      }
+
+      function bnpRShiftTo(t, e) {
+        var i = Math.floor(t / this.DB);
+        if (i >= this.t) e.t = 0;
+        else {
+          var r = t % this.DB,
+            n = this.DB - r,
+            F = (1 << r) - 1;
+          e[0] = this[i] >> r;
+          for (var o = i + 1; o < this.t; ++o)
+            (e[o - i - 1] |= (this[o] & F) << n), (e[o - i] = this[o] >> r);
+          r > 0 && (e[this.t - i - 1] |= (this.s & F) << n),
+            (e.t = this.t - i),
+            e.clamp();
+        }
+      }
+
+      function bnpSubTo(t, e) {
+        for (var i = 0, r = 0, n = Math.min(t.t, this.t); i < n; )
+          (r += this[i] - t[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+        if (t.t < this.t) {
+          for (r -= t.s; i < this.t; )
+            (r += this[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+          r += this.s;
+        } else {
+          for (r += this.s; i < t.t; )
+            (r -= t[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+          r -= t.s;
+        }
+        (e.s = r < 0 ? -1 : 0),
+          r < -1 ? (e[i++] = this.DV + r) : r > 0 && (e[i++] = r),
+          (e.t = i),
+          e.clamp();
+      }
+
+      function bnpMultiplyTo(t, e) {
+        var i = this.abs(),
+          r = t.abs(),
+          n = i.t;
+        for (e.t = n + r.t; --n >= 0; ) e[n] = 0;
+        for (n = 0; n < r.t; ++n) e[n + i.t] = i.am(0, r[n], e, n, 0, i.t);
+        (e.s = 0), e.clamp(), this.s != t.s && BigInteger.ZERO.subTo(e, e);
+      }
+
+      function bnpSquareTo(t) {
+        for (var e = this.abs(), i = (t.t = 2 * e.t); --i >= 0; ) t[i] = 0;
+        for (i = 0; i < e.t - 1; ++i) {
+          var r = e.am(i, e[i], t, 2 * i, 0, 1);
+          (t[i + e.t] += e.am(i + 1, 2 * e[i], t, 2 * i + 1, r, e.t - i - 1)) >=
+            e.DV && ((t[i + e.t] -= e.DV), (t[i + e.t + 1] = 1));
+        }
+        t.t > 0 && (t[t.t - 1] += e.am(i, e[i], t, 2 * i, 0, 1)),
+          (t.s = 0),
+          t.clamp();
+      }
+
+      function bnpDivRemTo(t, e, i) {
+        var r = t.abs();
+        if (!(r.t <= 0)) {
+          var n = this.abs();
+          if (n.t < r.t)
+            return (
+              null != e && e.fromInt(0), void (null != i && this.copyTo(i))
+            );
+          null == i && (i = nbi());
+          var F = nbi(),
+            o = this.s,
+            s = t.s,
+            u = this.DB - nbits(r[r.t - 1]);
+          u > 0
+            ? (r.lShiftTo(u, F), n.lShiftTo(u, i))
+            : (r.copyTo(F), n.copyTo(i));
+          var h = F.t,
+            p = F[h - 1];
+          if (0 != p) {
+            var a = p * (1 << this.F1) + (h > 1 ? F[h - 2] >> this.F2 : 0),
+              g = this.FV / a,
+              f = (1 << this.F1) / a,
+              B = 1 << this.F2,
+              l = i.t,
+              c = l - h,
+              m = null == e ? nbi() : e;
+            for (
+              F.dlShiftTo(c, m),
+                i.compareTo(m) >= 0 && ((i[i.t++] = 1), i.subTo(m, i)),
+                BigInteger.ONE.dlShiftTo(h, m),
+                m.subTo(F, F);
+              F.t < h;
+
+            )
+              F[F.t++] = 0;
+            for (; --c >= 0; ) {
+              var y =
+                i[--l] == p
+                  ? this.DM
+                  : Math.floor(i[l] * g + (i[l - 1] + B) * f);
+              if ((i[l] += F.am(0, y, i, c, 0, h)) < y)
+                for (F.dlShiftTo(c, m), i.subTo(m, i); i[l] < --y; )
+                  i.subTo(m, i);
+            }
+            null != e &&
+              (i.drShiftTo(h, e), o != s && BigInteger.ZERO.subTo(e, e)),
+              (i.t = h),
+              i.clamp(),
+              u > 0 && i.rShiftTo(u, i),
+              o < 0 && BigInteger.ZERO.subTo(i, i);
+          }
+        }
+      }
+
+      function bnMod(t) {
+        var e = nbi();
+        return (
+          this.abs().divRemTo(t, null, e),
+          this.s < 0 && e.compareTo(BigInteger.ZERO) > 0 && t.subTo(e, e),
+          e
+        );
+      }
+
+      function Classic(t) {
+        this.m = t;
+      }
+
+      function bnpIsEven() {
+        return 0 == (this.t > 0 ? 1 & this[0] : this.s);
+      }
+
+      function bnModPowInt(t, e) {
+        var i;
+        return (
+          (i = t < 256 || e.isEven() ? new Classic(e) : new Montgomery(e)),
+          this.exp(t, i)
+        );
+      }
+      !(function () {
+        var t = (window.Crypto = {});
+        (t.util = {
+          bytesToWords: function (t) {
+            for (var e = [], i = 0, r = 0; i < t.length; i++, r += 8)
+              e[r >>> 5] |= t[i] << (24 - (r % 32));
+            return e;
+          },
+          wordsToBytes: function (t) {
+            for (var e = [], i = 0; i < 32 * t.length; i += 8)
+              e.push((t[i >>> 5] >>> (24 - (i % 32))) & 255);
+            return e;
+          },
+          hexToBytes: function (t) {
+            for (var e = [], i = 0; i < t.length; i += 2)
+              e.push(parseInt(t.substr(i, 2), 16));
+            return e;
+          },
+        }),
+          (t.charenc = {});
+      })(),
+        (function () {
+          var t = Crypto,
+            e = t.util,
+            r = t.charenc.UTF8,
+            n = [
+              1116352408, 1899447441, 3049323471, 3921009573, 961987163,
+              1508970993, 2453635748, 2870763221, 3624381080, 310598401,
+              607225278, 1426881987, 1925078388, 2162078206, 2614888103,
+              3248222580, 3835390401, 4022224774, 264347078, 604807628,
+              770255983, 1249150122, 1555081692, 1996064986, 2554220882,
+              2821834349, 2952996808, 3210313671, 3336571891, 3584528711,
+              113926993, 338241895, 666307205, 773529912, 1294757372,
+              1396182291, 1695183700, 1986661051, 2177026350, 2456956037,
+              2730485921, 2820302411, 3259730800, 3345764771, 3516065817,
+              3600352804, 4094571909, 275423344, 430227734, 506948616,
+              659060556, 883997877, 958139571, 1322822218, 1537002063,
+              1747873779, 1955562222, 2024104815, 2227730452, 2361852424,
+              2428436474, 2756734187, 3204031479, 3329325298,
+            ],
+            F = (t.SHA256 = function (t, r) {
+              var n = e.wordsToBytes(F._sha256(t));
+              return r && r.asBytes
+                ? n
+                : r && r.asString
+                ? i.bytesToString(n)
+                : e.bytesToHex(n);
+            });
+          (F._sha256 = function (t) {
+            t.constructor == String && (t = r.stringToBytes(t));
+            var i,
+              F,
+              o,
+              s,
+              u,
+              h,
+              p,
+              a,
+              g,
+              f = e.bytesToWords(t),
+              B = 8 * t.length,
+              l = [
+                1779033703, 3144134277, 1013904242, 2773480762, 1359893119,
+                2600822924, 528734635, 1541459225,
+              ],
+              c = [];
+            (f[B >> 5] |= 128 << (24 - (B % 32))),
+              (f[15 + (((B + 64) >> 9) << 4)] = B);
+            for (var m = 0; m < f.length; m += 16) {
+              (i = l[0]),
+                (F = l[1]),
+                (o = l[2]),
+                (s = l[3]),
+                (u = l[4]),
+                (h = l[5]),
+                (p = l[6]),
+                (a = l[7]);
+              for (var y = 0; y < 64; y++) {
+                if (y < 16) c[y] = f[y + m];
+                else {
+                  var v = c[y - 15],
+                    d = c[y - 2],
+                    b =
+                      ((v << 25) | (v >>> 7)) ^
+                      ((v << 14) | (v >>> 18)) ^
+                      (v >>> 3),
+                    E =
+                      ((d << 15) | (d >>> 17)) ^
+                      ((d << 13) | (d >>> 19)) ^
+                      (d >>> 10);
+                  c[y] = b + (c[y - 7] >>> 0) + E + (c[y - 16] >>> 0);
+                }
+                var I = (i & F) ^ (i & o) ^ (F & o),
+                  C =
+                    ((i << 30) | (i >>> 2)) ^
+                    ((i << 19) | (i >>> 13)) ^
+                    ((i << 10) | (i >>> 22));
+                (g =
+                  (a >>> 0) +
+                  (((u << 26) | (u >>> 6)) ^
+                    ((u << 21) | (u >>> 11)) ^
+                    ((u << 7) | (u >>> 25))) +
+                  ((u & h) ^ (~u & p)) +
+                  n[y] +
+                  (c[y] >>> 0)),
+                  (a = p),
+                  (p = h),
+                  (h = u),
+                  (u = s + g),
+                  (s = o),
+                  (o = F),
+                  (F = i),
+                  (i = g + (C + I));
+              }
+              (l[0] += i),
+                (l[1] += F),
+                (l[2] += o),
+                (l[3] += s),
+                (l[4] += u),
+                (l[5] += h),
+                (l[6] += p),
+                (l[7] += a);
+            }
+            return l;
+          }),
+            (F._blocksize = 16);
+        })(),
+        (function () {
+          function t(t, e, i, r) {
+            return 0 <= t && t <= 15
+              ? e ^ i ^ r
+              : 16 <= t && t <= 31
+              ? (e & i) | (~e & r)
+              : 32 <= t && t <= 47
+              ? (e | ~i) ^ r
+              : 48 <= t && t <= 63
+              ? (e & r) | (i & ~r)
+              : 64 <= t && t <= 79
+              ? e ^ (i | ~r)
+              : "rmd160_f: j out of range";
+          }
+
+          function e(t) {
+            return 0 <= t && t <= 15
+              ? 0
+              : 16 <= t && t <= 31
+              ? 1518500249
+              : 32 <= t && t <= 47
+              ? 1859775393
+              : 48 <= t && t <= 63
+              ? 2400959708
+              : 64 <= t && t <= 79
+              ? 2840853838
+              : "rmd160_K1: j out of range";
+          }
+
+          function i(t) {
+            return 0 <= t && t <= 15
+              ? 1352829926
+              : 16 <= t && t <= 31
+              ? 1548603684
+              : 32 <= t && t <= 47
+              ? 1836072691
+              : 48 <= t && t <= 63
+              ? 2053994217
+              : 64 <= t && t <= 79
+              ? 0
+              : "rmd160_K2: j out of range";
+          }
+
+          function r(t, e) {
+            var i = (65535 & t) + (65535 & e);
+            return (((t >> 16) + (e >> 16) + (i >> 16)) << 16) | (65535 & i);
+          }
+
+          function n(t, e) {
+            return (t << e) | (t >>> (32 - e));
+          }
+          var F = Crypto,
+            o = F.util,
+            s = F.charenc,
+            u = s.UTF8;
+          (o.bytesToLWords = function (t) {
+            for (var e = Array(t.length >> 2), i = 0; i < e.length; i++)
+              e[i] = 0;
+            for (i = 0; i < 8 * t.length; i += 8)
+              e[i >> 5] |= (255 & t[i / 8]) << i % 32;
+            return e;
+          }),
+            (o.lWordsToBytes = function (t) {
+              for (var e = [], i = 0; i < 32 * t.length; i += 8)
+                e.push((t[i >> 5] >>> i % 32) & 255);
+              return e;
+            });
+          var p = (F.RIPEMD160 = function (t, e) {
+            var i = o.lWordsToBytes(p._rmd160(t));
+            return e && e.asBytes
+              ? i
+              : e && e.asString
+              ? h.bytesToString(i)
+              : o.bytesToHex(i);
+          });
+          p._rmd160 = function (F) {
+            F.constructor == String && (F = u.stringToBytes(F));
+            var s = o.bytesToLWords(F),
+              h = 8 * F.length;
+            (s[h >> 5] |= 128 << h % 32), (s[14 + (((h + 64) >>> 9) << 4)] = h);
+            for (
+              var p = 1732584193,
+                l = 4023233417,
+                c = 2562383102,
+                m = 271733878,
+                y = 3285377520,
+                v = 0;
+              v < s.length;
+              v += 16
+            ) {
+              for (
+                var d,
+                  b = p,
+                  E = l,
+                  I = c,
+                  C = m,
+                  D = y,
+                  A = p,
+                  T = l,
+                  x = c,
+                  w = m,
+                  S = y,
+                  H = 0;
+                H <= 79;
+                ++H
+              )
+                (d = r(b, t(H, E, I, C))),
+                  (d = r(d, s[v + a[H]])),
+                  (d = r(d, e(H))),
+                  (d = r(n(d, f[H]), D)),
+                  (b = D),
+                  (D = C),
+                  (C = n(I, 10)),
+                  (I = E),
+                  (E = d),
+                  (d = r(A, t(79 - H, T, x, w))),
+                  (d = r(d, s[v + g[H]])),
+                  (d = r(d, i(H))),
+                  (d = r(n(d, B[H]), S)),
+                  (A = S),
+                  (S = w),
+                  (w = n(x, 10)),
+                  (x = T),
+                  (T = d);
+              (d = r(l, r(I, w))),
+                (l = r(c, r(C, S))),
+                (c = r(m, r(D, A))),
+                (m = r(y, r(b, T))),
+                (y = r(p, r(E, x))),
+                (p = d);
+            }
+            return [p, l, c, m, y];
+          };
+          var a = [
+              0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 7, 4, 13, 1,
+              10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8, 3, 10, 14, 4, 9, 15, 8,
+              1, 2, 7, 0, 6, 13, 11, 5, 12, 1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7,
+              15, 14, 5, 6, 2, 4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15,
+              13,
+            ],
+            g = [
+              5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12, 6, 11, 3, 7,
+              0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2, 15, 5, 1, 3, 7, 14, 6, 9,
+              11, 8, 12, 2, 10, 0, 4, 13, 8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2,
+              13, 9, 7, 10, 14, 12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3,
+              9, 11,
+            ],
+            f = [
+              11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8, 7, 6, 8,
+              13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12, 11, 13, 6, 7, 14,
+              9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5, 11, 12, 14, 15, 14, 15, 9,
+              8, 9, 14, 5, 6, 8, 6, 5, 12, 9, 15, 5, 11, 6, 8, 13, 12, 5, 12,
+              13, 14, 11, 8, 5, 6,
+            ],
+            B = [
+              8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6, 9, 13, 15,
+              7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11, 9, 7, 15, 11, 8, 6,
+              6, 14, 12, 13, 5, 14, 13, 13, 7, 5, 15, 5, 8, 11, 14, 14, 6, 14,
+              6, 9, 12, 9, 12, 5, 15, 8, 8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5,
+              15, 13, 11, 11,
+            ];
+        })();
+      var dbits,
+        canary = 0xdeadbeefcafe,
+        j_lm = 15715070 == (16777215 & canary);
+      j_lm && "Microsoft Internet Explorer" == navigator.appName
+        ? (BigInteger.prototype.am = dbits = 30)
+        : j_lm && "Netscape" != navigator.appName
+        ? (BigInteger.prototype.am = dbits = 26)
+        : ((BigInteger.prototype.am = am3), (dbits = 28)),
+        (BigInteger.prototype.DB = dbits),
+        (BigInteger.prototype.DM = (1 << dbits) - 1),
+        (BigInteger.prototype.DV = 1 << dbits);
+      var BI_FP = 52;
+      (BigInteger.prototype.FV = Math.pow(2, BI_FP)),
+        (BigInteger.prototype.F1 = BI_FP - dbits),
+        (BigInteger.prototype.F2 = 2 * dbits - BI_FP);
+      var rr,
+        vv,
+        BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz",
+        BI_RC = new Array();
+      for (rr = "0".charCodeAt(0), vv = 0; vv <= 9; ++vv) BI_RC[rr++] = vv;
+      for (rr = "a".charCodeAt(0), vv = 10; vv < 36; ++vv) BI_RC[rr++] = vv;
+      for (rr = "A".charCodeAt(0), vv = 10; vv < 36; ++vv) BI_RC[rr++] = vv;
+
+      function bnClone() {
+        var t = nbi();
+        return this.copyTo(t), t;
+      }
+
+      function bnByteValue() {
+        return 0 == this.t ? this.s : (this[0] << 24) >> 24;
+      }
+
+      function bnSigNum() {
+        return this.s < 0
+          ? -1
+          : this.t <= 0 || (1 == this.t && this[0] <= 0)
+          ? 0
+          : 1;
+      }
+
+      function bnpToRadix(t) {
+        if ((null == t && (t = 10), 0 == this.signum() || t < 2 || t > 36))
+          return "0";
+        var e = this.chunkSize(t),
+          i = Math.pow(t, e),
+          r = nbv(i),
+          n = nbi(),
+          F = nbi(),
+          o = "";
+        for (this.divRemTo(r, n, F); n.signum() > 0; )
+          (o = (i + F.intValue()).toString(t).substr(1) + o),
+            n.divRemTo(r, n, F);
+        return F.intValue().toString(t) + o;
+      }
+
+      function bnpFromRadix(t, e) {
+        this.fromInt(0), null == e && (e = 10);
+        for (
+          var i = this.chunkSize(e),
+            r = Math.pow(e, i),
+            n = !1,
+            F = 0,
+            o = 0,
+            s = 0;
+          s < t.length;
+          ++s
+        ) {
+          var u = intAt(t, s);
+          u < 0
+            ? "-" == t.charAt(s) && 0 == this.signum() && (n = !0)
+            : ((o = e * o + u),
+              ++F >= i &&
+                (this.dMultiply(r), this.dAddOffset(o, 0), (F = 0), (o = 0)));
+        }
+        F > 0 && (this.dMultiply(Math.pow(e, F)), this.dAddOffset(o, 0)),
+          n && BigInteger.ZERO.subTo(this, this);
+      }
+
+      function bnpFromNumber(t, e, i) {
+        if ("number" == typeof e)
+          if (t < 2) this.fromInt(1);
+          else
+            for (
+              this.fromNumber(t, i),
+                this.testBit(t - 1) ||
+                  this.bitwiseTo(BigInteger.ONE.shiftLeft(t - 1), op_or, this),
+                this.isEven() && this.dAddOffset(1, 0);
+              !this.isProbablePrime(e);
+
+            )
+              this.dAddOffset(2, 0),
+                this.bitLength() > t &&
+                  this.subTo(BigInteger.ONE.shiftLeft(t - 1), this);
+        else {
+          var r = new Array(),
+            n = 7 & t;
+          (r.length = 1 + (t >> 3)),
+            e.nextBytes(r),
+            n > 0 ? (r[0] &= (1 << n) - 1) : (r[0] = 0),
+            this.fromString(r, 256);
+        }
+      }
+
+      function bnToByteArray() {
+        var t = this.t,
+          e = new Array();
+        e[0] = this.s;
+        var i,
+          r = this.DB - ((t * this.DB) % 8),
+          n = 0;
+        if (t-- > 0)
+          for (
+            r < this.DB &&
+            (i = this[t] >> r) != (this.s & this.DM) >> r &&
+            (e[n++] = i | (this.s << (this.DB - r)));
+            t >= 0;
+
+          )
+            r < 8
+              ? ((i = (this[t] & ((1 << r) - 1)) << (8 - r)),
+                (i |= this[--t] >> (r += this.DB - 8)))
+              : ((i = (this[t] >> (r -= 8)) & 255),
+                r <= 0 && ((r += this.DB), --t)),
+              0 != (128 & i) && (i |= -256),
+              0 == n && (128 & this.s) != (128 & i) && ++n,
+              (n > 0 || i != this.s) && (e[n++] = i);
+        return e;
+      }
+
+      function bnEquals(t) {
+        return 0 == this.compareTo(t);
+      }
+
+      function bnShiftLeft(t) {
+        var e = nbi();
+        return t < 0 ? this.rShiftTo(-t, e) : this.lShiftTo(t, e), e;
+      }
+
+      function bnTestBit(t) {
+        var e = Math.floor(t / this.DB);
+        return e >= this.t ? 0 != this.s : 0 != (this[e] & (1 << t % this.DB));
+      }
+
+      function bnpAddTo(t, e) {
+        for (var i = 0, r = 0, n = Math.min(t.t, this.t); i < n; )
+          (r += this[i] + t[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+        if (t.t < this.t) {
+          for (r += t.s; i < this.t; )
+            (r += this[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+          r += this.s;
+        } else {
+          for (r += this.s; i < t.t; )
+            (r += t[i]), (e[i++] = r & this.DM), (r >>= this.DB);
+          r += t.s;
+        }
+        (e.s = r < 0 ? -1 : 0),
+          r > 0 ? (e[i++] = r) : r < -1 && (e[i++] = this.DV + r),
+          (e.t = i),
+          e.clamp();
+      }
+
+      function bnAdd(t) {
+        var e = nbi();
+        return this.addTo(t, e), e;
+      }
+
+      function bnSubtract(t) {
+        var e = nbi();
+        return this.subTo(t, e), e;
+      }
+
+      function bnMultiply(t) {
+        var e = nbi();
+        return this.multiplyTo(t, e), e;
+      }
+
+      function bnSquare() {
+        var t = nbi();
+        return this.squareTo(t), t;
+      }
+
+      function bnDivide(t) {
+        var e = nbi();
+        return this.divRemTo(t, e, null), e;
+      }
+
+      function bnRemainder(t) {
+        var e = nbi();
+        return this.divRemTo(t, null, e), e;
+      }
+
+      function bnpDMultiply(t) {
+        (this[this.t] = this.am(0, t - 1, this, 0, 0, this.t)),
+          ++this.t,
+          this.clamp();
+      }
+
+      function bnpDAddOffset(t, e) {
+        if (0 != t) {
+          for (; this.t <= e; ) this[this.t++] = 0;
+          for (this[e] += t; this[e] >= this.DV; )
+            (this[e] -= this.DV),
+              ++e >= this.t && (this[this.t++] = 0),
+              ++this[e];
+        }
+      }
+
+      function NullExp() {}
+
+      function bnPow(t) {
+        return this.exp(t, new NullExp());
+      }
+
+      function bnpMultiplyLowerTo(t, e, i) {
+        var r,
+          n = Math.min(this.t + t.t, e);
+        for (i.s = 0, i.t = n; n > 0; ) i[--n] = 0;
+        for (r = i.t - this.t; n < r; ++n)
+          i[n + this.t] = this.am(0, t[n], i, n, 0, this.t);
+        for (r = Math.min(t.t, e); n < r; ++n) this.am(0, t[n], i, n, 0, e - n);
+        i.clamp();
+      }
+
+      function barrettSqrTo(t, e) {
+        t.squareTo(e), this.reduce(e);
+      }
+
+      function bnModInverse(t) {
+        var e = t.isEven();
+        if ((this.isEven() && e) || 0 == t.signum()) return BigInteger.ZERO;
+        for (
+          var i = t.clone(),
+            r = this.clone(),
+            n = nbv(1),
+            F = nbv(0),
+            o = nbv(0),
+            s = nbv(1);
+          0 != i.signum();
+
+        ) {
+          for (; i.isEven(); )
+            i.rShiftTo(1, i),
+              e
+                ? ((n.isEven() && F.isEven()) ||
+                    (n.addTo(this, n), F.subTo(t, F)),
+                  n.rShiftTo(1, n))
+                : F.isEven() || F.subTo(t, F),
+              F.rShiftTo(1, F);
+          for (; r.isEven(); )
+            r.rShiftTo(1, r),
+              e
+                ? ((o.isEven() && s.isEven()) ||
+                    (o.addTo(this, o), s.subTo(t, s)),
+                  o.rShiftTo(1, o))
+                : s.isEven() || s.subTo(t, s),
+              s.rShiftTo(1, s);
+          i.compareTo(r) >= 0
+            ? (i.subTo(r, i), e && n.subTo(o, n), F.subTo(s, F))
+            : (r.subTo(i, r), e && o.subTo(n, o), s.subTo(F, s));
+        }
+        return 0 != r.compareTo(BigInteger.ONE)
+          ? BigInteger.ZERO
+          : s.compareTo(t) >= 0
+          ? s.subtract(t)
+          : s.signum() < 0
+          ? (s.addTo(t, s), s.signum() < 0 ? s.add(t) : s)
+          : s;
+      }
+      (BigInteger.prototype.copyTo = bnpCopyTo),
+        (BigInteger.prototype.fromInt = bnpFromInt),
+        (BigInteger.prototype.fromString = bnpFromString),
+        (BigInteger.prototype.clamp = bnpClamp),
+        (BigInteger.prototype.dlShiftTo = bnpDLShiftTo),
+        (BigInteger.prototype.drShiftTo = bnpDRShiftTo),
+        (BigInteger.prototype.lShiftTo = bnpLShiftTo),
+        (BigInteger.prototype.rShiftTo = bnpRShiftTo),
+        (BigInteger.prototype.subTo = bnpSubTo),
+        (BigInteger.prototype.multiplyTo = bnpMultiplyTo),
+        (BigInteger.prototype.squareTo = bnpSquareTo),
+        (BigInteger.prototype.divRemTo = bnpDivRemTo),
+        (BigInteger.prototype.invDigit = BigInteger.prototype.isEven =
+          bnpIsEven),
+        (BigInteger.prototype.negate = bnNegate),
+        (BigInteger.prototype.abs = bnAbs),
+        (BigInteger.prototype.compareTo = bnCompareTo),
+        (BigInteger.prototype.bitLength = bnBitLength),
+        (BigInteger.prototype.mod = bnMod),
+        (BigInteger.prototype.modPowInt = bnModPowInt),
+        (BigInteger.ZERO = nbv(0)),
+        (BigInteger.ONE = nbv(1));
+      var lowprimes = [
+          2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
+          67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
+          139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211,
+          223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283,
+          293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379,
+          383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461,
+          463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563,
+          569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643,
+          647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739,
+          743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829,
+          839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937,
+          941, 947, 953, 967, 971, 977, 983, 991, 997,
+        ],
+        lplim = (1 << 26) / lowprimes[lowprimes.length - 1];
+
+      function ECFieldElementFp(t, e) {
+        (this.x = e), (this.q = t);
+      }
+
+      function feFpToBigInteger() {
+        return this.x;
+      }
+
+      function feFpNegate() {
+        return new ECFieldElementFp(this.q, this.x.negate().mod(this.q));
+      }
+
+      function feFpAdd(t) {
+        return new ECFieldElementFp(
+          this.q,
+          this.x.add(t.toBigInteger()).mod(this.q)
+        );
+      }
+
+      function ECPointFp(t, e, i, r) {
+        (this.curve = t),
+          (this.x = e),
+          (this.y = i),
+          (this.z = null == r ? BigInteger.ONE : r),
+          (this.zinv = null);
+      }
+
+      function pointFpGetX() {
+        return (
+          null == this.zinv && (this.zinv = this.z.modInverse(this.curve.q)),
+          this.curve.fromBigInteger(
+            this.x.toBigInteger().multiply(this.zinv).mod(this.curve.q)
+          )
+        );
+      }
+
+      function pointFpGetY() {
+        return (
+          null == this.zinv && (this.zinv = this.z.modInverse(this.curve.q)),
+          this.curve.fromBigInteger(
+            this.y.toBigInteger().multiply(this.zinv).mod(this.curve.q)
+          )
+        );
+      }
+
+      function pointFpIsInfinity() {
+        return (
+          (null == this.x && null == this.y) ||
+          (this.z.equals(BigInteger.ZERO) &&
+            !this.y.toBigInteger().equals(BigInteger.ZERO))
+        );
+      }
+
+      function pointFpNegate() {
+        return new ECPointFp(this.curve, this.x, this.y.negate(), this.z);
+      }
+
+      function pointFpAdd(t) {
+        if (this.isInfinity()) return t;
+        if (t.isInfinity()) return this;
+        var e = t.y
+            .toBigInteger()
+            .multiply(this.z)
+            .subtract(this.y.toBigInteger().multiply(t.z))
+            .mod(this.curve.q),
+          i = t.x
+            .toBigInteger()
+            .multiply(this.z)
+            .subtract(this.x.toBigInteger().multiply(t.z))
+            .mod(this.curve.q);
+        if (BigInteger.ZERO.equals(i))
+          return BigInteger.ZERO.equals(e)
+            ? this.twice()
+            : this.curve.getInfinity();
+        var r = new BigInteger("3"),
+          n = this.x.toBigInteger(),
+          F = this.y.toBigInteger(),
+          o = (t.x.toBigInteger(), t.y.toBigInteger(), i.square()),
+          s = o.multiply(i),
+          u = n.multiply(o),
+          h = e.square().multiply(this.z),
+          p = h
+            .subtract(u.shiftLeft(1))
+            .multiply(t.z)
+            .subtract(s)
+            .multiply(i)
+            .mod(this.curve.q),
+          a = u
+            .multiply(r)
+            .multiply(e)
+            .subtract(F.multiply(s))
+            .subtract(h.multiply(e))
+            .multiply(t.z)
+            .add(e.multiply(s))
+            .mod(this.curve.q),
+          g = s.multiply(this.z).multiply(t.z).mod(this.curve.q);
+        return new ECPointFp(
+          this.curve,
+          this.curve.fromBigInteger(p),
+          this.curve.fromBigInteger(a),
+          g
+        );
+      }
+
+      function pointFpTwice() {
+        if (this.isInfinity()) return this;
+        if (0 == this.y.toBigInteger().signum())
+          return this.curve.getInfinity();
+        var t = new BigInteger("3"),
+          e = this.x.toBigInteger(),
+          i = this.y.toBigInteger(),
+          r = i.multiply(this.z),
+          n = r.multiply(i).mod(this.curve.q),
+          F = this.curve.a.toBigInteger(),
+          o = e.square().multiply(t);
+
+        var s = (o = o.mod(this.curve.q))
+            .square()
+            .subtract(e.shiftLeft(3).multiply(n))
+            .shiftLeft(1)
+            .multiply(r)
+            .mod(this.curve.q),
+          u = o
+            .multiply(t)
+            .multiply(e)
+            .subtract(n.shiftLeft(1))
+            .shiftLeft(2)
+            .multiply(n)
+            .subtract(o.square().multiply(o))
+            .mod(this.curve.q),
+          h = r.square().multiply(r).shiftLeft(3).mod(this.curve.q);
+        return new ECPointFp(
+          this.curve,
+          this.curve.fromBigInteger(s),
+          this.curve.fromBigInteger(u),
+          h
+        );
+      }
+
+      function pointFpMultiply(t) {
+        if (this.isInfinity()) return this;
+        if (0 == t.signum()) return this.curve.getInfinity();
+        var e,
+          i = t,
+          r = i.multiply(new BigInteger("3")),
+          n = this.negate(),
+          F = this;
+        for (e = r.bitLength() - 2; e > 0; --e) {
+          F = F.twice();
+          var o = r.testBit(e);
+          o != i.testBit(e) && (F = F.add(o ? this : n));
+        }
+        return F;
+      }
+
+      function ECCurveFp(t, e, i) {
+        (this.q = t),
+          (this.a = this.fromBigInteger(e)),
+          (this.b = this.fromBigInteger(i)),
+          (this.infinity = new ECPointFp(this, null, null));
+      }
+
+      function curveFpFromBigInteger(t) {
+        return new ECFieldElementFp(this.q, t);
+      }
+
+      function curveFpDecodePointHex(t) {
+        switch (parseInt(t.substr(0, 2), 16)) {
+          case 0:
+            return this.infinity;
+          case 2:
+
+          default:
+            return null;
+          case 4:
+            var e = (t.length - 2) / 2,
+              i = t.substr(2, e),
+              r = t.substr(e + 2, e);
+            return new ECPointFp(
+              this,
+              this.fromBigInteger(new BigInteger(i, 16)),
+              this.fromBigInteger(new BigInteger(r, 16))
+            );
+        }
+      }
+
+      function X9ECParameters(t, e, i, r) {
+        (this.curve = t), (this.g = e), (this.n = i), (this.h = r);
+      }
+
+      function x9getCurve() {}
+
+      function x9getG() {
+        return this.g;
+      }
+
+      function x9getN() {}
+
+      function x9getH() {}
+
+      function fromHex(t) {
+        return new BigInteger(t, 16);
+      }
+
+      function secp256k1() {
+        var t = fromHex(
+            "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F"
+          ),
+          e = BigInteger.ZERO,
+          i = fromHex("7"),
+          r = fromHex(
+            "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141"
+          ),
+          n = BigInteger.ONE,
+          F = new ECCurveFp(t, e, i),
+          o = F.decodePointHex(
+            "0479BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8"
+          );
+        return new X9ECParameters(F, o);
+      }
+
+      function getSECCurveByName(t) {
+        return "secp256k1" == t
+          ? secp256k1()
+          : "secp256r1" == t
+          ? secp256r1()
+          : null;
+      }
+      (BigInteger.prototype.chunkSize = BigInteger.prototype.toRadix =
+        bnpToRadix),
+        (BigInteger.prototype.fromRadix = bnpFromRadix),
+        (BigInteger.prototype.fromNumber = bnpFromNumber),
+        (BigInteger.prototype.addTo = bnpAddTo),
+        (BigInteger.prototype.dMultiply = bnpDMultiply),
+        (BigInteger.prototype.dAddOffset = bnpDAddOffset),
+        (BigInteger.prototype.multiplyLowerTo = bnpMultiplyLowerTo),
+        (BigInteger.prototype.millerRabin = BigInteger.prototype.clone =
+          bnClone),
+        (BigInteger.prototype.intValue = BigInteger.prototype.byteValue =
+          bnByteValue),
+        (BigInteger.prototype.shortValue = BigInteger.prototype.signum =
+          bnSigNum),
+        (BigInteger.prototype.toByteArray = bnToByteArray),
+        (BigInteger.prototype.equals = bnEquals),
+        (BigInteger.prototype.not = BigInteger.prototype.shiftLeft =
+          bnShiftLeft),
+        (BigInteger.prototype.bitCount = BigInteger.prototype.testBit =
+          bnTestBit),
+        (BigInteger.prototype.flipBit = BigInteger.prototype.add = bnAdd),
+        (BigInteger.prototype.subtract = bnSubtract),
+        (BigInteger.prototype.multiply = bnMultiply),
+        (BigInteger.prototype.divide = bnDivide),
+        (BigInteger.prototype.remainder = bnRemainder),
+        (BigInteger.prototype.modInverse = bnModInverse),
+        (BigInteger.prototype.pow = bnPow),
+        (BigInteger.prototype.square = bnSquare),
+        (ECFieldElementFp.prototype.equals =
+          ECFieldElementFp.prototype.toBigInteger =
+            feFpToBigInteger),
+        (ECFieldElementFp.prototype.negate = feFpNegate),
+        (ECFieldElementFp.prototype.add = feFpAdd),
+        (ECFieldElementFp.prototype.subtract =
+          ECFieldElementFp.prototype.multiply =
+            pointFpAdd),
+        (ECPointFp.prototype.getX = pointFpGetX),
+        (ECPointFp.prototype.getY = pointFpGetY),
+        (ECPointFp.prototype.equals = ECPointFp.prototype.isInfinity =
+          pointFpIsInfinity),
+        (ECPointFp.prototype.negate = pointFpNegate),
+        (ECPointFp.prototype.add = pointFpAdd),
+        (ECPointFp.prototype.twice = pointFpTwice),
+        (ECPointFp.prototype.multiply = pointFpMultiply),
+        (ECCurveFp.prototype.fromBigInteger = curveFpFromBigInteger),
+        (ECCurveFp.prototype.decodePointHex = curveFpDecodePointHex),
+        (X9ECParameters.prototype.getCurve = x9getCurve),
+        (X9ECParameters.prototype.getG = x9getG),
+        (X9ECParameters.prototype.getN = x9getN);
+      var EventEmitter = function () {};
+      !(function (t) {
+        "object" != typeof module && (t.EventEmitter = EventEmitter);
+      })("object" == typeof module ? module.exports : (window.Bitcoin = {})),
+        (BigInteger.valueOf = nbv),
+        (BigInteger.prototype.toByteArrayUnsigned = function () {
+          var t = this.abs().toByteArray();
+          return t.length
+            ? (0 == t[0] && (t = t.slice(1)),
+              t.map(function (t) {
+                return t < 0 ? t + 256 : t;
+              }))
+            : t;
+        }),
+        (BigInteger.fromByteArrayUnsigned = function (t) {
+          return t.length
+            ? 128 & t[0]
+              ? new BigInteger([0].concat(t))
+              : new BigInteger(t)
+            : t.valueOf(0);
+        });
+      var names = [];
+      void 0 === window.console && (window.console = {});
+      for (var i = 0; i < names.length; ++i)
+        void 0 === window.console[names[i]] &&
+          (window.console[names[i]] = function () {});
+      for (var i in ((Bitcoin.Util = {
+        isArray:
+          Array.isArray ||
+          function (t) {
+            return "[object Array]" === Object.prototype.toString.call(t);
+          },
+        sha256ripe160: function (t) {
+          return Crypto.RIPEMD160(
+            Crypto.SHA256(t, {
+              asBytes: !0,
+            }),
+            {
+              asBytes: !0,
+            }
+          );
+        },
+      }),
+      Crypto.util))
+        Crypto.util.hasOwnProperty(i) && (Bitcoin.Util[i] = Crypto.util[i]);
+
+      function integerToBytes(t, e) {
+        return t.toByteArrayUnsigned();
+      }
+      !(function (t) {
+        t.Base58 = {
+          alphabet:
+            "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
+          validRegex: /^[1-9A-HJ-NP-Za-km-z]+$/,
+          base: BigInteger.valueOf(58),
+          encode: function (t) {
+            for (
+              var i = BigInteger.fromByteArrayUnsigned(t), r = [];
+              i.compareTo(e.base) >= 0;
+
+            ) {
+              var n = i.mod(e.base);
+              r.unshift(e.alphabet[n.intValue()]),
+                (i = i.subtract(n).divide(e.base));
+            }
+            r.unshift(e.alphabet[i.intValue()]);
+            for (var F = 0; F < t.length && 0 == t[F]; F++)
+              r.unshift(e.alphabet[0]);
+            return r.join("");
+          },
+          decode: function (t) {
+            for (
+              var i = BigInteger.valueOf(0), r = 0, n = t.length - 1;
+              n >= 0;
+              n--
+            ) {
+              var F = e.alphabet.indexOf(t[n]);
+              if (F < 0) throw "Invalid character";
+              (i = i.add(
+                BigInteger.valueOf(F).multiply(e.base.pow(t.length - 1 - n))
+              )),
+                "1" == t[n] ? r++ : (r = 0);
+            }
+            for (var o = i.toByteArrayUnsigned(); r-- > 0; ) o.unshift(0);
+            return o;
+          },
+        };
+        var e = t.Base58;
+      })("undefined" != typeof Bitcoin ? Bitcoin : module.exports),
+        (Bitcoin.Address = function (t) {
+          "string" == typeof t && (t = Bitcoin.Address.decodeString(t)),
+            (this.hash = t),
+            (this.version = 0);
+        }),
+        (Bitcoin.Address.prototype.toString = function () {
+          var t = this.hash.slice(0);
+          t.unshift(this.version);
+          var e = Crypto.SHA256(
+              Crypto.SHA256(t, {
+                asBytes: !0,
+              }),
+              {
+                asBytes: !0,
+              }
+            ),
+            i = t.concat(e.slice(0, 4));
+          return Bitcoin.Base58.encode(i);
+        }),
+        (Bitcoin.Address.prototype.getHashBase64 = function () {
+          return Crypto.util.bytesToBase64(this.hash);
+        }),
+        (Bitcoin.Address.decodeString = function (t) {
+          var e = Bitcoin.Base58.decode(t),
+            i = e.slice(0, 21),
+            r = Crypto.SHA256(
+              Crypto.SHA256(i, {
+                asBytes: !0,
+              }),
+              {
+                asBytes: !0,
+              }
+            );
+          if (r[0] != e[21] || r[1] != e[22] || r[2] != e[23] || r[3] != e[24])
+            throw "Checksum validation failed!";
+          var n = i.shift();
+          if (0x00 !== n) throw "Address does not start with 1!";
+          return i;
+        }),
+        (Bitcoin.ECKey =
+          ((r = function (t) {
+            t instanceof BigInteger
+              ? (this.priv = t)
+              : Bitcoin.Util.isArray(t)
+              ? (this.priv = BigInteger.fromByteArrayUnsigned(t))
+              : "string" == typeof t &&
+                (51 == t.length && "5" == t[0]
+                  ? (this.priv = BigInteger.fromByteArrayUnsigned)
+                  : this.priv);
+          }),
+          (r.compressByDefault = !1),
+          (r.prototype.setCompressed = function (t) {
+            this.compressed = !!t;
+          }),
+          (r.prototype.getPubKeyHash = function () {
+            return this.pubKeyHash;
+          }),
+          r));
+    </script>
+
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      input {
+        width: 400px;
+      }
+    </style>
+  </body>
+</html>
